@@ -17,6 +17,7 @@ body {
 
 .card {
   padding: 25px;
+  align-items: center;
 }
 
 .card-img {
@@ -38,7 +39,7 @@ body {
   font-size: 90%;
 }
 
-.card > buttom {
+.card > button {
   display: block;
   margin: 25px auto;
   width: 80%;
