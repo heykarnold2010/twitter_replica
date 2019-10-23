@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, url_for, redirect, flash
-from app.forms import TitleForm, ContactForm, LoginForm, RegisterForm
+from app.forms import TitleForm, ContactForm, LoginForm, RegisterForm, PostForm
 
 @app.route('/')
 @app.route('/index')
@@ -83,3 +83,51 @@ def register():
         return redirect(url_for('login'))
 
     return render_template('form.html', title='Register', form=form)
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    form = PostForm()
+    person = {
+    'first_name': 'Dwight',
+    'last_name': 'Shrute',
+    'username': 'Battle',
+    'bio': 'His name is my name too.',
+    'age': 180
+    }
+    tweets = [
+        {
+        'id' : 1,
+        'tweet': 'Who is stealing my name?',
+        'date_posted': '10/23/2019',
+        'username': 'Heimerschmidt'
+        },
+        {
+        'id' : 2,
+        'tweet': 'My name is John Jacob Jingle Heimerschmidt.',
+        'date_posted': '6/15/2019',
+        'username': 'JohnSmith'
+        },
+        {
+        'id' : 3,
+        'tweet': 'Maybe this year, no one will steal my name.',
+        'date_posted': '01/12/2019',
+        'username': 'Heimerschmidt'
+        }
+    ]
+
+    # if form.validate_on_submit():
+    #     print(form.tweet.data)
+    #     return redirect(url_for('profile'))
+
+    if form.validate_on_submit():
+        # TODO: handle actual tweet being added
+        tweets.insert(0, ({
+            'id' : len(tweets) + 1,
+            'tweet': form.tweet.data,
+            'date_posted': '10/23/2019',
+            'username': 'sample'
+
+        })
+        return redirect(url_for('profile'))
+
+    return render_template('profile.html', title='Profile', person=person, tweets=tweets, form=form)

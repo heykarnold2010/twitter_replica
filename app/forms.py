@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, PasswordField, IntegerField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 
 class TitleForm(FlaskForm):
@@ -17,9 +17,9 @@ class ContactForm(FlaskForm):
     validators=[DataRequired()])
     submit = SubmitField('Send Message')
 
-
-
-
+class PostForm(FlaskForm):
+    tweet = StringField('What are you doing?', validators=[DataRequired(), Length(max=10)])
+    submit = SubmitField('Tweet')
 
 
 class LoginForm(FlaskForm):
