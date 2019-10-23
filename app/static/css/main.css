@@ -17,7 +17,7 @@ body {
 
 .card {
   padding: 25px;
-  align-items: center;
+  /* align-items: center; */
 }
 
 .card-img {

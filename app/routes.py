@@ -1,6 +1,7 @@
 from app import app
 from flask import render_template, url_for, redirect, flash
 from app.forms import TitleForm, ContactForm, LoginForm, RegisterForm, PostForm
+from app.models import Post
 
 @app.route('/')
 @app.route('/index')
@@ -84,50 +85,48 @@ def register():
 
     return render_template('form.html', title='Register', form=form)
 
-@app.route('/profile', methods=['GET', 'POST'])
-def profile():
+@app.route('/profile')
+@app.route('/profile/<username>', methods=['GET', 'POST'])
+def profile(username=''):
+    # if username is empty
+    if not username:
+        return redirect(url_for('login'))
     form = PostForm()
-    person = {
-    'first_name': 'Dwight',
-    'last_name': 'Shrute',
-    'username': 'Battle',
-    'bio': 'His name is my name too.',
-    'age': 180
-    }
-    tweets = [
-        {
-        'id' : 1,
-        'tweet': 'Who is stealing my name?',
-        'date_posted': '10/23/2019',
-        'username': 'Heimerschmidt'
+
+    people = {
+        'id': '1',
+        'first_name': 'Dwight',
+        'last_name': 'Shrute',
+        'username': 'DSchrute',
+        'bio': 'Identify theft is not a joke, Jim.',
+        'age': 180
         },
         {
-        'id' : 2,
-        'tweet': 'My name is John Jacob Jingle Heimerschmidt.',
-        'date_posted': '6/15/2019',
-        'username': 'JohnSmith'
-        },
-        {
-        'id' : 3,
-        'tweet': 'Maybe this year, no one will steal my name.',
-        'date_posted': '01/12/2019',
-        'username': 'Heimerschmidt'
+        'id': '2',
+        'first_name': 'Jim',
+        'last_name': 'Halpert',
+        'username': 'AmDwight',
+        'bio': 'Bears, Beats, Battlestar Galactica',
+        'age': 180
         }
-    ]
+
+    person = {}
+
+    for p in people:
+        if p['username'] == username:
+            person = p
+            break
+
+    tweets = Post.query.all()
 
     # if form.validate_on_submit():
     #     print(form.tweet.data)
     #     return redirect(url_for('profile'))
 
     if form.validate_on_submit():
-        # TODO: handle actual tweet being added
-        tweets.insert(0, ({
-            'id' : len(tweets) + 1,
-            'tweet': form.tweet.data,
-            'date_posted': '10/23/2019',
-            'username': 'sample'
 
-        })
+        # tweet = form.tweet.data
+
         return redirect(url_for('profile'))
 
     return render_template('profile.html', title='Profile', person=person, tweets=tweets, form=form)
