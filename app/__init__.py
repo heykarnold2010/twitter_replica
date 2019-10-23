@@ -3,22 +3,29 @@ from flask_bootstrap import Bootstrap
 from config import Config
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 
 app = Flask(__name__)
 
-# all variables based on this application has to be instantiated after the app instance is created
+# all variables based on this application must be instantiated after the app instance is created
+
 bootstrap = Bootstrap(app)
 
-
-# flask app instance uses from object method to load in all configuartion variables
+# flask app instance uses from object method to load in all configuration variables
 app.config.from_object(Config)
 
-# set up database variables
 
+# setup db variables
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
+# app variable for handling login functionality
+login = LoginManager(app)
+
+# when a page requires someone to be logged in, specify the route they should be sent to when accessing that page anonymously
+login.login_view = 'login'
+
+
 from app import routes
-# the way to run flask on a separate port
