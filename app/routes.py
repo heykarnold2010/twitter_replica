@@ -1,4 +1,4 @@
-from app import app
+from app import app, db
 from flask import render_template, url_for, redirect, flash
 from app.forms import TitleForm, ContactForm, LoginForm, RegisterForm, PostForm
 from app.models import Post
@@ -35,7 +35,7 @@ def index(word=''):
     ]
     return render_template('index.html', title='Home', products=products, word=word)
 
-@app.route('/title')
+# @app.route('/title')
 @app.route('/title', methods=['GET', 'POST'])
 def title():
     form = TitleForm()
@@ -69,7 +69,7 @@ def login():
     if form.validate_on_submit():
         flash(f'You have been logged in!')
 
-        return redirect(url_for('index'))
+        return redirect(url_for('profile'))
 
     return render_template('form.html', title='Login', form=form)
 
@@ -91,24 +91,27 @@ def profile(username=''):
     # if username is empty
     if not username:
         return redirect(url_for('login'))
+
     form = PostForm()
 
-    people = {
-        'id': '1',
-        'first_name': 'Dwight',
-        'last_name': 'Shrute',
-        'username': 'DSchrute',
-        'bio': 'Identify theft is not a joke, Jim.',
-        'age': 180
+    people =[
+        {
+            'id': '1',
+            'first_name': 'Dwight',
+            'last_name': 'Shrute',
+            'username': 'dschrute',
+            'bio': 'Identify theft is not a joke, Jim.',
+            'age': 36
         },
         {
-        'id': '2',
-        'first_name': 'Jim',
-        'last_name': 'Halpert',
-        'username': 'AmDwight',
-        'bio': 'Bears, Beats, Battlestar Galactica',
-        'age': 180
+            'id': '2',
+            'first_name': 'Jim',
+            'last_name': 'Halpert',
+            'username': 'amdwight',
+            'bio': 'Bears, Beats, Battlestar Galactica',
+            'age': 30
         }
+    ]
 
     person = {}
 
@@ -119,9 +122,14 @@ def profile(username=''):
 
     tweets = Post.query.all()
 
-    # if form.validate_on_submit():
-    #     print(form.tweet.data)
-    #     return redirect(url_for('profile'))
+    if form.validate_on_submit():
+        tweet = form.tweet.data
+        post = Post(user_id=person['id'], tweet=tweet)
+
+        db.session.add(post)
+        db.session.commit()
+
+        return redirect(url_for('profile', username=username))
 
     if form.validate_on_submit():
 
