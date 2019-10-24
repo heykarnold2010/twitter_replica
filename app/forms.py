@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, PasswordField, IntegerField
+from wtforms import StringField, SubmitField, TextAreaField, PasswordField, IntegerField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 
@@ -15,7 +15,12 @@ class ContactForm(FlaskForm):
     validators=[DataRequired(), Email()])
     message = TextAreaField('Message',
     validators=[DataRequired()])
+    # show_messages = BooleanField('Show All Data')
     submit = SubmitField('Send Message')
+
+class ShowContactsForm(FlaskForm):
+    show_messages = BooleanField('Display Data')
+    submit = SubmitField('Show All Data')
 
 class PostForm(FlaskForm):
     tweet = StringField('What are you doing?', validators=[DataRequired(), Length(max=10)])

@@ -30,7 +30,11 @@ class Post(db.Model):
     tweet = db.Column(db.String(140))
     date_posted = db.Column(db.DateTime, default=datetime.now())
 
-
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    email = db.Column(db.String(120), unique=True, index=True)
+    message = db.Column(db.String(350))
 
 @login.user_loader
 def load_user(id):

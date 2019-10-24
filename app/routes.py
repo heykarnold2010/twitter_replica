@@ -1,7 +1,7 @@
 from app import app, db
 from flask import render_template, url_for, redirect, flash
-from app.forms import TitleForm, ContactForm, LoginForm, RegisterForm, PostForm
-from app.models import Post, User
+from app.forms import TitleForm, ContactForm, LoginForm, RegisterForm, PostForm, ShowContactsForm
+from app.models import Post, User, Contact
 from flask_login import login_user, logout_user, login_required, current_user
 
 
@@ -55,13 +55,36 @@ def title():
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     form = ContactForm()
+    showData = ShowContactsForm()
+
+    if showData.validate_on_submit():
+        show_messages = showData.show_messages.data
+        if show_messages == True:
+            allInfo = Contact.query.all()
+            return render_template('contactinfo.html', allInfo=allInfo)
 
     if form.validate_on_submit():
+        contactInfo = Contact(
+            name = form.name.data,
+            email = form.email.data,
+            message = form.message.data,
+        )
+
+        # add to stage and commit
+        db.session.add(contactInfo)
+        db.session.commit()
+
+        # show_messages = form.show_messages.data
+        # if show_messages == True:
+        #     allInfo = Contact.query.all()
+        #     return render_template('contactinfo.html', allInfo=allInfo)
+
+
         flash(f'Thanks {form.name.data}, your message has been received. We have sent a copy of the submission to {form.email.data}. Message: {form.message.data}')
 
         return redirect(url_for('index'))
 
-    return render_template('form.html', form=form, title='Contact Us')
+    return render_template('contactform.html', showData=showData, form=form, title='Contact Us')
 
 
 @app.route('/login', methods=['GET', 'POST'])
